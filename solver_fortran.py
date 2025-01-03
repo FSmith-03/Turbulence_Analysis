@@ -10,6 +10,7 @@ import fmodpy
 import pandas as pd
 import time
 
+write = False
 
 def write_to_csv(data, filename="output.csv"):
     # Convert each array in `data` to a DataFrame column
@@ -55,8 +56,9 @@ def solver_needle():
         elapsed_time = time.time() - start_time  # End the timer
         print(f"Time taken to calculate total velocities: {elapsed_time:.2f} seconds")
         # Write to csv
-        print("Writing data to csv")
-        write_to_csv({"u_total": u_total, "v_total": v_total, "w_total": w_total,}, filenamer(1,test))
+        if write == True:
+            print("Writing data to csv")
+            write_to_csv({"u_total": u_total, "v_total": v_total, "w_total": w_total,}, filenamer(1,test))
         #Mean velocity squared
         u_2_average = pv.u_2_average(u_total)
         v_2_average = pv.u_2_average(v_total)
@@ -84,12 +86,13 @@ def solver_needle():
         signature_1 = cf.signature_function_1(f, r, u_2_average)
         print("Calculating Signature function 2")
         signature_2 = cf.signature_function_2(f, r, u_2_average, max_index_plot, x_boundary, tol)
-        print("Writing data to csv")
-        E_k_write = np.zeros(len(r))
-        k_write = np.zeros(len(r))
-        E_k_write[:len(E_k)] = E_k
-        k_write[:len(k)] = k
-        write_to_csv({"r": r, "f": f, "g": g, "f_s": f_s, "E_k": E_k_write, "k": k_write, "V_t": townsends, "V_1": signature_1, "V_2": signature_2}, filenamer(2, test))
+        if write == True:
+            print("Writing data to csv")
+            E_k_write = np.zeros(len(r))
+            k_write = np.zeros(len(r))
+            E_k_write[:len(E_k)] = E_k
+            k_write[:len(k)] = k
+            write_to_csv({"r": r, "f": f, "g": g, "f_s": f_s, "E_k": E_k_write, "k": k_write, "V_t": townsends, "V_1": signature_1, "V_2": signature_2}, filenamer(2, test))
         print("Plotting correlation and structure functions")
         if test == 0:
             pc.theoretical_f(r, f, max_index_plot, L_e)
